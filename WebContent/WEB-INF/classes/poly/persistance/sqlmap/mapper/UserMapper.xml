@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.IUserMapper">
+
+ 
+	
+	
+		<!-- 회원가입하기(회원정보 등록하기) -->
+		<insert id="insertUserInfo" parameterType="UserDTO">
+		INSERT INTO USER_INFO
+			(
+			USER_NO,
+			EMAIL,
+			PASSWORD,
+			USER_NAME,
+			REG_ID,
+			REG_DT,
+			CHG_ID,
+			CHG_DT
+			)
+			
+			VALUES
+			(
+			#{user_no},
+			#{email},
+			#{password},
+			#{user_name},
+			#{email},
+			NOW(),
+			#{email},
+			NOW()
+			)
+
+		</insert>
+			
+			
+	
+	<!-- 이메일 중복확인 -->
+	<select id="emailCheck" parameterType="UserDTO" resultType="UserDTO">
+	
+	SELECT
+		EMAIL
+	FROM
+		USER_INFO
+	WHERE
+		EMAIL = #{email}
+	
+	</select>
+	
+	  <!--중복가입 방지를 위한 ID 중복 확인 -->
+    <select id="nameCheck" parameterType="UserDTO" resultType="UserDTO">
+        SELECT
+            USER_NAME
+        FROM
+            USER_INFO
+        WHERE
+            USER_NAME = #{user_name}
+    </select>
+    
+	
+	<!-- 로그인을 위해 아이디와 비밀번호가 일치하는지 확인하기 -->
+	<select id="getUserLoginCheck" parameterType="UserDTO" resultType="UserDTO">
+	SELECT * FROM USER_INFO
+	WHERE EMAIL = #{email}
+	AND PASSWORD = #{password}
+
+	</select>
+	
+	
+	 <!-- 로그인을 위해 아이디와 비밀번호가 일치하는지 확인하기 -->
+	<select id="getLoginCheck" parameterType="UserDTO" resultType="UserDTO">
+		SELECT *
+		FROM USER_INFO
+		WHERE EMAIL = #{email}
+		AND PASSWORD = #{password}
+	</select>
+	
+		<!-- 회원정보 불러오기-->
+	<select id="getUserInfo" parameterType="UserDTO" resultType="UserDTO">
+		SELECT *
+		FROM USER_INFO
+		WHERE EMAIL = #{email}
+		AND PASSWORD = #{password}
+	</select>
+	
+		<!-- 비밀번호 변경용 회원정보 불러오기-->
+	<select id="pwcheckUserInfo" parameterType="UserDTO" resultType="UserDTO">
+		SELECT *
+		FROM USER_INFO
+		WHERE EMAIL = #{email}
+	</select>
+	
+		<!-- 비밀번호 변경 -->
+	<update id="changePwd" parameterType="UserDTO">
+		UPDATE USER_INFO
+		SET PASSWORD = #{password}
+		WHERE EMAIL = #{email}
+	</update>
+	
+		<!-- 회원정보 수정 -->
+	<update id="updUserInfo">
+		UPDATE USER_INFO
+		SET
+			PASSWORD = #{password},
+			USER_NAME = #{user_name}
+		WHERE EMAIL = #{email}
+	</update>
+	
+		<!-- 회원탈퇴 -->
+	<delete id="delUserInfo">
+		DELETE
+		FROM USER_INFO
+		WHERE EMAIL = #{email}
+		AND   PASSWORD = #{password}
+	</delete>
+	
+	
+	 <select id="getUserDetail" parameterType="UserDTO" resultType="UserDTO">
+        SELECT *
+            FROM USER_INFO
+        WHERE USER_NO = #{user_no}
+    </select>
+	
+
+	
+
+</mapper>

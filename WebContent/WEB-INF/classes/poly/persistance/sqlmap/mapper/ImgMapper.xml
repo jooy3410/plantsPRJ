@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- JAVA와 연결할 Mapper 파일 설정 -->
+<mapper namespace="poly.persistance.mapper.IImgMapper">
+
+	<!-- 이미지 DB저장 -->
+	<insert id="InsertImgInfo" parameterType="ImgDTO">
+		INSERT INTO IMG_INFO
+			(
+				SEQ,
+				FULL_FILE_INFO,
+				SAVE_FILE_NAME,
+				SAVE_FILE_PATH,
+				save_folder_name,
+				ORG_FILE_NAME,
+				EXT,
+				NOTE,
+				REG_DT,
+				REG_ID,
+				CHG_ID,
+				USER_NO,
+				CHG_DT
+			)
+		VALUES(
+				(SELECT IFNULL(MAX(A.SEQ),0)+1 FROM IMG_INFO A),
+				#{full_file_info},
+				#{save_file_name},
+				#{save_file_path},
+				#{save_folder_name},
+				#{org_file_name},
+				#{ext},
+				#{note},
+				NOW(),
+				#{reg_id},
+				#{chg_id},
+				#{user_no},
+				NOW()
+			)
+	</insert>
+	
+	
+<!-- 이미지 불러오기 -->
+   <select id="getImg" resultType="ImgDTO">
+      SELECT 
+         N.SEQ,
+         N.FULL_FILE_INFO,
+         N.SAVE_FILE_NAME, 
+         N.SAVE_FILE_PATH,
+         N.SAVE_FOLDER_NAME,
+         N.USER_NO,
+         U.USER_NO
+      FROM 
+         IMG_INFO N, USER_INFO U
+      WHERE 
+         N.USER_NO = U.USER_NO
+   
+         
+   </select>
+   
+   <!--parameterType="ImgDTO"전달하는 인자(넘버값을 전달) resultType="ImgDTO"결과값-->
+   <select id="getMyImg" parameterType="ImgDTO" resultType="ImgDTO">
+   		SELECT *
+   		FROM IMG_INFO
+   		WHERE USER_NO = #{user_no}
+   </select>
+   
+   
+	<!-- 이미지 게시판 상세페이지 불러오기 -->
+	<select id="getimgDetail" resultType="imgDTO">
+		SELECT *
+		FROM IMG_INFO
+		WHERE 
+		SEQ = #{seq}
+	</select>
+	
+	
+	<!-- 이미지 게시판 수정하기 -->
+	
+	<update id="imgUpdate" parameterType="ImgDTO">
+	UPDATE IMG_INFO
+	SET
+				NOTE=#{note}
+	WHERE 
+				SEQ = #{seq}
+
+	
+	</update>
+	
+		<!-- 이미지 삭제 -->
+	<delete id="deleteImg" parameterType="ImgDTO">
+		DELETE 
+			FROM IMG_INFO
+		WHERE SEQ = #{seq}
+	</delete>
+	
+	
+	
+
+	</mapper>
